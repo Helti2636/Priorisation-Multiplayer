@@ -42,8 +42,8 @@ export function CardTile({ name, dragging, small, onPointerDown }: {
 }
 
 /** Sorting stage: drag the current card into Yes / Maybe / No (clicking a pile also works). */
-export function SortStage({ card, sorted, total, onAssign, readOnly = false }: {
-  card: PriorityCard | null; sorted: number; total: number; onAssign: (group: Group) => void; readOnly?: boolean;
+export function SortStage({ card, sorted, total, onAssign, readOnly = false, assignments = [] }: {
+  card: PriorityCard | null; sorted: number; total: number; onAssign: (group: Group) => void; readOnly?: boolean; assignments?: Assignment[];
 }) {
   const [drag, setDrag] = useState<{ x: number; y: number } | null>(null);
   const zoneRefs = useRef<Record<Group, HTMLDivElement | null>>({ yes: null, maybe: null, no: null });
@@ -72,13 +72,21 @@ export function SortStage({ card, sorted, total, onAssign, readOnly = false }: {
         {card ? <CardTile name={card.name} dragging={!!drag} onPointerDown={start} /> : <p className="tg-standing">All cards sorted.</p>}
       </div>
       <div className="pr-zones">
-        {GROUPS.map((g) => (
-          <div key={g} ref={(el) => (zoneRefs.current[g] = el)}
-            className={`pr-zone ${g} ${drag ? "armed" : ""}`}
-            onClick={() => !readOnly && card && onAssign(g)}>
-            <span className="pr-zone-label">{GROUP_LABEL[g]}</span>
-          </div>
-        ))}
+        {GROUPS.map((g) => {
+          const placed = assignments.filter((a) => a.group === g).map((a) => CARD_BY_ID[a.cardId]?.name ?? a.cardId);
+          return (
+            <div key={g} ref={(el) => (zoneRefs.current[g] = el)}
+              className={`pr-zone ${g} ${drag ? "armed" : ""}`}
+              onClick={() => !readOnly && card && onAssign(g)}>
+              <span className="pr-zone-label">{GROUP_LABEL[g]}</span>
+              {placed.length > 0 && (
+                <div className="pr-zone-placed">
+                  {placed.map((n) => <span key={n} className="pr-zone-chip">{n}</span>)}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
       {drag && card && (
         <div className="pr-ghost" style={{ left: drag.x, top: drag.y }}><CardTile name={card.name} /></div>

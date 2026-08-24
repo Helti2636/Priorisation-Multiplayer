@@ -291,9 +291,12 @@
 .pr-progress{font-family:var(--tg-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--tg-ink-soft);}
 .pr-current{min-height:5rem; display:flex; align-items:center; justify-content:center;}
 .pr-zones{display:grid; grid-template-columns:repeat(3,1fr); gap:.8rem; width:100%; max-width:44rem;}
-.pr-zone{min-height:120px; border-radius:16px; border:2px dashed var(--tg-line); display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition:transform .12s ease;}
+.pr-zone{min-height:120px; border-radius:16px; border:2px dashed var(--tg-line); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.55rem;
+  padding:.75rem .6rem; cursor:pointer; transition:transform .12s ease;}
 .pr-zone .pr-zone-label{font-family:var(--tg-serif); font-size:1.2rem; font-weight:600;}
+.pr-zone-placed{display:flex; flex-wrap:wrap; gap:.3rem; justify-content:center; max-width:100%;}
+.pr-zone-chip{font-family:var(--tg-serif); font-size:.62rem; line-height:1.3; font-weight:500; padding:.12rem .45rem; border-radius:999px;
+  background:rgba(127,127,127,.16); border:1px solid currentColor; opacity:.9;}
 .pr-zone.armed{transform:scale(1.03);}
 .pr-zone.yes{background:var(--pr-yes-bg); border-color:var(--pr-yes-ink); color:var(--pr-yes-ink);}
 .pr-zone.maybe{background:var(--pr-maybe-bg); border-color:var(--pr-maybe-ink); color:var(--pr-maybe-ink);}

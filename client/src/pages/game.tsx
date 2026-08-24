@@ -71,6 +71,7 @@ export default function Game() {
           {isController ? "You have the pen — sort the card for the group." : `${driver} is sorting. Take control when it’s your turn.`}
         </p>
         <SortStage card={nextCard} sorted={gameState.assignments.length} total={gameState.totalCards}
+          assignments={gameState.assignments}
           onAssign={(g: Group) => nextCard && room.assign(nextCard.id, g)} readOnly={!isController} />
         {!isController && takeControlRow}
       </>

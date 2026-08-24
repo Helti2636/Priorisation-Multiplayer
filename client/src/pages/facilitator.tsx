@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { useRoute } from "wouter";
 import { useRoom } from "@/lib/useRoom";
 import { RoomBar, SortStage, OverviewBoard } from "@/components/game-parts";
@@ -16,7 +16,6 @@ export default function Facilitator() {
   const roomCode = params?.roomCode ?? "";
   const room = useRoom(roomCode, "facilitator");
   const { gameState, myId } = room;
-  const [copied, setCopied] = useState(false);
 
   if (!gameState) {
     return (
@@ -52,22 +51,6 @@ export default function Facilitator() {
     return `<p class="k">Prioritization</p><h1>Yes · Maybe · No</h1>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px;">${GROUPS.map(col).join("")}</div>
       <p class="foot">Saved ${esc(new Date().toLocaleString())}</p>`;
-  };
-
-  const copyText = () =>
-    GROUPS.map((g) => {
-      const items = cardsIn(g).map((a) => `  - ${nameOf(a.cardId)}`).join("\n") || "  —";
-      return `${GROUP_LABEL[g]}:\n${items}`;
-    }).join("\n\n");
-
-  const copyOverview = async () => {
-    try {
-      await navigator.clipboard.writeText(copyText());
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      /* clipboard blocked — ignore */
-    }
   };
 
   const takeControlBtn = !isController ? <button className="tg-btn" onClick={room.takeControl}>Take control</button> : null;
@@ -118,6 +101,7 @@ export default function Facilitator() {
         <p className="tg-standing" style={{ marginBottom: "1rem" }}>Driving now: <strong>{driver}</strong>. {isController ? "You have the pen." : ""}</p>
         {isController ? (
           <SortStage card={nextCard} sorted={gameState.assignments.length} total={gameState.totalCards}
+            assignments={gameState.assignments}
             onAssign={(g: Group) => nextCard && room.assign(nextCard.id, g)} />
         ) : (
           <>
@@ -138,9 +122,9 @@ export default function Facilitator() {
       <OverviewBoard assignments={gameState.assignments} onMove={(cardId, g) => room.assign(cardId, g)} readOnly={!isController} />
       <div className="tg-controls" style={{ marginTop: "1.6rem" }}><div className="buttons">
         {takeControlBtn}
-        <button className="tg-btn" onClick={copyOverview}>{copied ? "Copied ✓" : "Copy"}</button>
-        <button className="tg-btn ghost" onClick={() => printHtml("Prioritization", overviewDoc())}>Save as PDF</button>
+        <button className="tg-btn" onClick={() => printHtml("Prioritization", overviewDoc())}>Save as PDF</button>
         <button className="tg-btn ghost" onClick={room.restart}>Run it again</button>
+        <button className="tg-btn ghost" onClick={room.leave}>End session</button>
       </div></div>
     </>
   );
