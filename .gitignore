@@ -1,0 +1,19 @@
+# Dependencies (werden mit `npm install` erzeugt – nicht hochladen)
+node_modules/
+
+# Build-Ausgabe
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Umgebungs-/Geheimdateien
+.env
+.env.local
+.env.*.local
+
+# macOS
+.DS_Store
+
+node_modules
